@@ -9,6 +9,8 @@ declare global {
       UPSTASH_REDIS_REST_TOKEN: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
+      DEPLOYED_BACKEND_URI: string;
+      DEPLOYED_FRONTEND_URI: string;
     }
   }
 }

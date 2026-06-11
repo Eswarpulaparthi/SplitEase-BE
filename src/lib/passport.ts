@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
-import { AuthService, generateUniqueUsername } from "../services/auth.service";
+import { AuthService } from "../services/auth.service";
 
 const authService = new AuthService();
 
@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "https://splitease-be-3.onrender.com/auth/google/callback",
+      callbackURL: `${process.env.DEPLOYED_BACKEND_URI!}/auth/google/callback`,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
@@ -37,7 +37,7 @@ passport.use(
         }
 
         const sanitizedBase = authService.sanitized(email.split("@")[0]);
-        const username = generateUniqueUsername(sanitizedBase);
+        const username = authService.generateUniqueUsername(sanitizedBase);
         const user = await User.create({
           name,
           username,
