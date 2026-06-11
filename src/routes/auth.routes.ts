@@ -20,7 +20,7 @@ router.get(
     const { token } = req.user as { token: string };
 
     res.redirect(
-      `${process.env.DEPLOYED_FRONTEND_URI!}oauth-success?token=${token}`,
+      `https://split-ease-frontend-bay.vercel.app/oauth-success?token=${token}`,
     );
   },
 );
