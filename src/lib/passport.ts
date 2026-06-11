@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: `${process.env.DEPLOYED_BACKEND_URI!}/auth/google/callback`,
+      callbackURL: `https://splitease-be-3.onrender.com/auth/google/callback`,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {

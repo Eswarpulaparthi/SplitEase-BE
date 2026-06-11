@@ -14,7 +14,7 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `${process.env.DEPLOYED_FRONTEND_URI!}`,
+    failureRedirect: `https://split-ease-frontend-bay.vercel.app/`,
   }),
   (req, res) => {
     const { token } = req.user as { token: string };
