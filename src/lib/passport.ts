@@ -27,8 +27,6 @@ passport.use(
           const token = jwt.sign(
             {
               id: existingUser._id,
-              name: existingUser.name,
-              username: existingUser.username,
             },
             process.env.JWT_SECRET!,
             { expiresIn: "1d" },
@@ -44,11 +42,9 @@ passport.use(
           email,
         });
 
-        const token = jwt.sign(
-          { id: user._id, name: user.name, username: user.username },
-          process.env.JWT_SECRET!,
-          { expiresIn: "1d" },
-        );
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+          expiresIn: "1d",
+        });
 
         return done(null, { token });
       } catch (err) {

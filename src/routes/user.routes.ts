@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addFriend,
+  apiMe,
   getNotifications,
   getUsername,
   searchSuggestions,
@@ -9,9 +10,7 @@ import {
 } from "../controller/user.controller";
 const router = Router();
 
-router.get("/api/me", (req, res) => {
-  res.json(req.auth);
-});
+router.get("/api/me", apiMe);
 
 router.patch("/api/update-username", usernameUpdate);
 

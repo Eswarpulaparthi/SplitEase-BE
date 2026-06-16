@@ -1,8 +1,26 @@
 import type { Request, Response } from "express";
 import User from "../models/user.model";
 import Notification from "../models/notification.model";
-import { type CustomJwtPayload } from "../types/express";
 import mongoose from "mongoose";
+
+export const apiMe = async (req: Request, res: Response) => {
+  try {
+    const id = req.auth?.id;
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ id: user._id, name: user.name, username: user.username });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
 
 export const usernameUpdate = async (req: Request, res: Response) => {
   try {
@@ -39,12 +57,6 @@ export const usernameUpdate = async (req: Request, res: Response) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    const data = {
-      id,
-      name: updated.name,
-      username: updated.username,
-    };
-    req.auth = data as CustomJwtPayload;
     return res.status(201).json({ success: true });
   } catch (err) {
     console.error("update-username error:", err);
