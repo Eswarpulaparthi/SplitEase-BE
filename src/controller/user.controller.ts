@@ -107,13 +107,17 @@ export const addFriend = async (req: Request, res: Response) => {
     const friendId = req.body.friendId as string;
     const notifId = req.body.notifId as string;
     const userId = req.auth?.id as string;
-    await User.findByIdAndUpdate(userId, {
-      $addToSet: { friends: new mongoose.Types.ObjectId(friendId) },
-    });
-    await User.findByIdAndUpdate(friendId, {
-      $addToSet: { friends: new mongoose.Types.ObjectId(userId) },
-    });
-    await Notification.deleteOne({ _id: new mongoose.Types.ObjectId(notifId) });
+    await Promise.all([
+      User.findByIdAndUpdate(userId, {
+        $addToSet: { friends: new mongoose.Types.ObjectId(friendId) },
+      }),
+      User.findByIdAndUpdate(friendId, {
+        $addToSet: { friends: new mongoose.Types.ObjectId(userId) },
+      }),
+      Notification.deleteOne({
+        _id: new mongoose.Types.ObjectId(notifId),
+      }),
+    ]);
     res.json({ message: "Friend request accepted" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
