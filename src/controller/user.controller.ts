@@ -125,28 +125,64 @@ export const getUsername = async (req: Request, res: Response) => {
 
 export const sendFriendRequest = async (req: Request, res: Response) => {
   try {
-    const friendId = req.body.friendId as string;
-    const friend = await User.findById(friendId);
+    const { friendId } = req.body;
     const userId = req.auth?.id as string;
+
+    if (userId === friendId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot send a friend request to yourself",
+      });
+    }
+
+    const friend = await User.findById(friendId);
+
     if (!friend) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    const duplicateNotification = await Notification.find({
-      sender: new mongoose.Types.ObjectId(userId),
-      receiver: new mongoose.Types.ObjectId(friendId),
+
+    const alreadyFriend = await User.exists({
+      _id: userId,
+      friends: friendId,
     });
+
+    if (alreadyFriend) {
+      return res.status(400).json({
+        success: false,
+        message: "Already friends",
+      });
+    }
+
+    const duplicateNotification = await Notification.findOne({
+      sender: userId,
+      receiver: friendId,
+    });
+
     if (duplicateNotification) {
-      return res.status(201).json(duplicateNotification);
+      return res.status(200).json({
+        success: true,
+        notification: duplicateNotification,
+        message: "Friend request already sent",
+      });
     }
+
     const notification = await Notification.create({
-      sender: new mongoose.Types.ObjectId(userId),
-      receiver: new mongoose.Types.ObjectId(friendId),
+      sender: userId,
+      receiver: friendId,
     });
-    res.status(201).json(notification);
+
+    return res.status(201).json({
+      success: true,
+      notification,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
