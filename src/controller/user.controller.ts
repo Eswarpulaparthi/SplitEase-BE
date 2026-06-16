@@ -95,6 +95,13 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+    const duplicateNotification = await Notification.find({
+      sender: new mongoose.Types.ObjectId(userId),
+      receiver: new mongoose.Types.ObjectId(friendId),
+    });
+    if (duplicateNotification) {
+      return res.status(201).json(duplicateNotification);
+    }
     const notification = await Notification.create({
       sender: new mongoose.Types.ObjectId(userId),
       receiver: new mongoose.Types.ObjectId(friendId),
