@@ -3,6 +3,7 @@ import { JwtPayload } from "jsonwebtoken";
 interface CustomJwtPayload extends JwtPayload {
   id: string;
   name: string;
+  username: string;
 }
 
 declare global {
