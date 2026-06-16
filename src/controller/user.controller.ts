@@ -22,6 +22,44 @@ export const apiMe = async (req: Request, res: Response) => {
   }
 };
 
+export const checkFriend = async (req: Request, res: Response) => {
+  try {
+    const id = req.auth?.id;
+    const { username } = req.body;
+
+    const friendUser = await User.findOne(
+      { username },
+      { username: 1, friends: 1 },
+    ).lean();
+
+    if (!friendUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const isFriend = await User.exists({
+      _id: id,
+      friends: friendUser._id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        _id: friendUser._id,
+        username: friendUser.username,
+      },
+      isFriend: Boolean(isFriend),
+      totalFriendsCount: friendUser.friends.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 export const usernameUpdate = async (req: Request, res: Response) => {
   try {
     const { username } = req.body;

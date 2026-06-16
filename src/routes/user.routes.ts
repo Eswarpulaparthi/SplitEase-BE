@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addFriend,
   apiMe,
+  checkFriend,
   getNotifications,
   getUsername,
   searchSuggestions,
@@ -21,6 +22,8 @@ router.post("/api/send-friend-request", sendFriendRequest);
 router.get("/api/notifications", getNotifications);
 
 router.post("/api/add-friend", addFriend);
+
+router.post("/api/check-friend", checkFriend);
 
 router.get("/api/search-suggestions", searchSuggestions);
 
