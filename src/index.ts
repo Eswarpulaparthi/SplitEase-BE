@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth.routes";
+import groupRoutes from "./routes/group.routes";
 import { authmiddle } from "./middlewares/auth.middleware";
 import userRoutes from "./routes/user.routes";
 import "./lib/passport";
@@ -29,6 +30,7 @@ app.use(authRoutes);
 app.use(authmiddle);
 
 app.use(userRoutes);
+app.use(groupRoutes);
 
 app.get("/logout", logout);
 
