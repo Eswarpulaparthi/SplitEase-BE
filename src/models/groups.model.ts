@@ -1,5 +1,4 @@
 import mongoose, { Schema, model } from "mongoose";
-import { ref } from "process";
 
 const groupSchema = new Schema(
   {
@@ -15,12 +14,6 @@ const groupSchema = new Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-      },
-    ],
-    expenses: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Expense",
       },
     ],
   },
