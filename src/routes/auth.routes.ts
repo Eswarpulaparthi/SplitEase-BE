@@ -14,13 +14,13 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `https://split-ease-frontend-bay.vercel.app/`,
+    failureRedirect: process.env.DEPLOYED_FRONTEND_URI,
   }),
   (req, res) => {
     const { token } = req.user as { token: string };
 
     res.redirect(
-      `https://split-ease-frontend-bay.vercel.app/oauth-success?token=${token}`,
+      `${process.env.DEPLOYED_FRONTEND_URI}oauth-success?token=${token}`,
     );
   },
 );
