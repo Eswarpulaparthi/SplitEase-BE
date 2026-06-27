@@ -109,7 +109,10 @@ export const getUsername = async (req: Request, res: Response) => {
     const username = req.params.username as string;
     const user = await User.findOne({ username }).populate({
       path: "friends",
-      select: "username",
+      select: {
+        username: 1,
+        createdAt: 1,
+      },
     });
     if (!user) {
       return res
@@ -117,7 +120,7 @@ export const getUsername = async (req: Request, res: Response) => {
         .json({ success: false, message: "User not found" });
     }
 
-    res.status(201).json(user);
+    res.status(201).json(user.friends);
   } catch (err) {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
@@ -227,11 +230,17 @@ export const searchSuggestions = async (req: Request, res: Response) => {
   try {
     const q = req.query.q as string;
     if (!q) return res.json([]);
+
+    const user = await User.findById(req.auth?.id).select("friends");
+    const excludedIds = [...(user?.friends ?? []), req.auth?.id];
+
     const results = await User.find({
+      _id: { $nin: excludedIds },
       username: { $regex: q, $options: "i" },
     })
       .limit(5)
       .select("username");
+
     res.json(results);
   } catch (err) {
     console.error("search suggestions error:", err);

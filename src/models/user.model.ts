@@ -20,7 +20,7 @@ const userSchema = new Schema(
   },
   { timestamps: true },
 );
-
+userSchema.index({ username: "text", name: "text" });
 const User = model("User", userSchema);
 
 export default User;
